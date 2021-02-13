@@ -4,8 +4,7 @@ import WifiManager from 'react-native-wifi-reborn';
 import WifiLogo from '../../images/iconWifi.png';
 
 const requestWifiPermission = async () => {
-    const enabled = await WifiManager.isEnabled();
-    if (!enabled) {
+    
         const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
             {
@@ -18,8 +17,6 @@ const requestWifiPermission = async () => {
             },
         );
         return granted === PermissionsAndroid.RESULTS.GRANTED;
-    }
-    return true;
 }
 
 
@@ -29,13 +26,12 @@ class Wifi extends React.Component {
         super(props)
         this.state = {
             isEnabled: false,
-            wifis: ["ABC", "EFG", "IJK", "LMN"]
+            wifis: [{title: "ABC",id: 1}, {title: "EFG",id: 2}, {title: "IJK",id: 3}, {title: "LMN",id: 4}]
         }
     }
 
     componentDidMount() {
-        const isEnabled = requestWifiPermission();
-        this.setState({ isEnabled: isEnabled });
+        requestWifiPermission();
     }
 
     wifiList() {
@@ -49,7 +45,7 @@ class Wifi extends React.Component {
         return (
             <View>
                 <Text style={styles.item}>
-                    {item}
+                    {item.title}
                 </Text>
             </View>
         )
@@ -64,6 +60,7 @@ class Wifi extends React.Component {
                 </View>
                 
                 <FlatList 
+                    keyExtractor={item => item.id}
                     data={this.state.wifis}
                     renderItem={({ item }) => this.renderItem(item)}
                     style={styles.flatList}
